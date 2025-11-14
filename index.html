@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Adaptive Algebra 2 Teaching App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📐 Algebra 2 Interactive Learning</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="stats">
+                <span>Level: <strong id="userLevel">1</strong></span>
+                <span>Score: <strong id="userScore">0</strong></span>
+                <span>Streak: <strong id="userStreak">0</strong></span>
+            </div>
+        </header>
+
+        <main>
+            <div class="lesson-area">
+                <h2 id="lessonTitle">Welcome to Algebra 2!</h2>
+                <p id="lessonDescription">Touch and drag on the graph to explore mathematical concepts.</p>
+            </div>
+
+            <div class="svg-container">
+                <svg id="mainCanvas" viewBox="-300 -300 600 600" preserveAspectRatio="xMidYMid meet">
+                    <!-- Grid -->
+                    <g id="grid"></g>
+                    <!-- Axes -->
+                    <g id="axes">
+                        <line x1="-300" y1="0" x2="300" y2="0" stroke="#333" stroke-width="2"/>
+                        <line x1="0" y1="-300" x2="0" y2="300" stroke="#333" stroke-width="2"/>
+                    </g>
+                    <!-- Graphs -->
+                    <g id="graphs"></g>
+                    <!-- Interactive elements -->
+                    <g id="interactive"></g>
+                    <!-- Labels -->
+                    <g id="labels"></g>
+                </svg>
+            </div>
+
+            <div class="problem-area">
+                <div class="question-box">
+                    <h3 id="questionText">Question will appear here</h3>
+                    <div id="answerOptions"></div>
+                </div>
+
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Enter your answer...">
+                    <button id="submitBtn">Submit</button>
+                    <button id="hintBtn">Hint</button>
+                </div>
+
+                <div id="feedback" class="feedback"></div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" id="prevBtn">← Previous</button>
+                <button class="control-btn" id="nextBtn">Next →</button>
+                <button class="control-btn" id="resetBtn">Reset</button>
+            </div>
+        </main>
+
+        <div class="topic-selector">
+            <h3>Topics</h3>
+            <div class="topics-grid">
+                <button class="topic-btn" data-topic="quadratic">Quadratic Functions</button>
+                <button class="topic-btn" data-topic="polynomial">Polynomials</button>
+                <button class="topic-btn" data-topic="exponential">Exponential Functions</button>
+                <button class="topic-btn" data-topic="logarithm">Logarithms</button>
+                <button class="topic-btn" data-topic="rational">Rational Functions</button>
+                <button class="topic-btn" data-topic="systems">Systems of Equations</button>
+                <button class="topic-btn" data-topic="conic">Conic Sections</button>
+                <button class="topic-btn" data-topic="sequences">Sequences & Series</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
