@@ -43,7 +43,6 @@ class AlgebraTeachingApp {
         this.svg.addEventListener('mouseleave', this.handleMouseUp.bind(this));
 
         // UI Controls
-        document.getElementById('submitBtn').addEventListener('click', () => this.checkAnswer());
         document.getElementById('hintBtn').addEventListener('click', () => this.showHint());
         document.getElementById('nextBtn').addEventListener('click', () => this.nextProblem());
         document.getElementById('prevBtn').addEventListener('click', () => this.prevProblem());
@@ -56,11 +55,6 @@ class AlgebraTeachingApp {
                 e.target.classList.add('active');
                 this.loadTopic(e.target.dataset.topic);
             });
-        });
-
-        // Enter key for input
-        document.getElementById('userInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.checkAnswer();
         });
     }
 
@@ -1440,19 +1434,22 @@ class AlgebraTeachingApp {
         document.getElementById('feedback').className = 'feedback';
         document.getElementById('userInput').value = '';
 
-        // Setup answer interface
-        if (problem.type === 'multiple') {
-            document.getElementById('userInput').style.display = 'none';
-            problem.options.forEach(option => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = option;
-                btn.onclick = () => this.selectOption(btn, option);
-                document.getElementById('answerOptions').appendChild(btn);
-            });
-        } else {
-            document.getElementById('userInput').style.display = 'block';
-        }
+        // Setup answer interface (all problems are multiple choice)
+        document.getElementById('userInput').style.display = 'none';
+        problem.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = option;
+            btn.onclick = () => {
+                // Mark selection visually
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                this.selectedOption = option;
+                // Auto-submit on click
+                this.checkAnswer();
+            };
+            document.getElementById('answerOptions').appendChild(btn);
+        });
 
         // Draw interactive visualization
         if (problem.interactive) {
@@ -1462,11 +1459,6 @@ class AlgebraTeachingApp {
         this.hintsUsed = 0;
     }
 
-    selectOption(btn, option) {
-        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        this.selectedOption = option;
-    }
 
     // Drawing Functions
     drawQuadratic(a, b, c) {
@@ -1808,16 +1800,10 @@ class AlgebraTeachingApp {
 
     checkAnswer() {
         const problem = this.problems[this.currentProblemIndex];
-        let userAnswer;
-
-        if (problem.type === 'multiple') {
-            userAnswer = this.selectedOption;
-        } else {
-            userAnswer = document.getElementById('userInput').value.trim();
-        }
+        const userAnswer = this.selectedOption;
 
         if (!userAnswer) {
-            this.showFeedback('Please provide an answer!', 'incorrect');
+            this.showFeedback('Please select an answer!', 'incorrect');
             return;
         }
 
@@ -1843,13 +1829,12 @@ class AlgebraTeachingApp {
 
         this.showFeedback(`Correct! +${points} points! 🎉`, 'correct');
 
-        if (problem.type === 'multiple') {
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                if (btn.textContent === problem.answer) {
-                    btn.classList.add('correct');
-                }
-            });
-        }
+        // Highlight the correct answer
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            if (btn.textContent === problem.answer) {
+                btn.classList.add('correct');
+            }
+        });
 
         this.recordPerformance(true, problem.level);
         this.updateUI();
@@ -1861,13 +1846,12 @@ class AlgebraTeachingApp {
         this.userStreak = 0;
         this.showFeedback('Not quite right. Try again!', 'incorrect');
 
-        if (problem.type === 'multiple') {
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                if (btn.classList.contains('selected')) {
-                    btn.classList.add('incorrect');
-                }
-            });
-        }
+        // Mark the selected answer as incorrect
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            if (btn.classList.contains('selected')) {
+                btn.classList.add('incorrect');
+            }
+        });
 
         this.recordPerformance(false, problem.level);
 
